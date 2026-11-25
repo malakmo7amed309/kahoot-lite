@@ -1,0 +1,36 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Fredoka", sans-serif;
+  --font-body: "Nunito", sans-serif;
+  --color-grape: #46178f;
+  --color-grape-deep: #2d0a5e;
+  --color-candy: #ff3355;
+  --color-sky: #26890c;
+}
+
+html, body, #root { height: 100%; }
+body { font-family: var(--font-body); }
+
+@keyframes pop-in {
+  0% { transform: scale(0.6); opacity: 0; }
+  70% { transform: scale(1.08); }
+  100% { transform: scale(1); opacity: 1; }
+}
+@keyframes bounce-podium {
+  0% { transform: translateY(100%); }
+  60% { transform: translateY(-6%); }
+  100% { transform: translateY(0); }
+}
+@keyframes pulse-ring {
+  0% { box-shadow: 0 0 0 0 rgba(255,255,255,0.5); }
+  100% { box-shadow: 0 0 0 22px rgba(255,255,255,0); }
+}
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+.anim-pop { animation: pop-in 0.45s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.anim-podium { animation: bounce-podium 0.7s cubic-bezier(0.34, 1.56, 0.64, 1) both; }
+.anim-ring { animation: pulse-ring 1.2s ease-out infinite; }
+.anim-float { animation: float-y 3s ease-in-out infinite; }
