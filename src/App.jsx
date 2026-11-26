@@ -11,7 +11,7 @@ const PACKS = [
   {
     id: 'general',
     name: 'General Knowledge',
-    emoji: '🌍',
+    icon: 'globe',
     questions: [
       { q: 'Which planet is known as the Red Planet?', a: ['Mars', 'Venus', 'Jupiter', 'Mercury'], c: 0 },
       { q: 'How many sides does a hexagon have?', a: ['Five', 'Six', 'Seven', 'Eight'], c: 1 },
@@ -26,7 +26,7 @@ const PACKS = [
   {
     id: 'egypt',
     name: 'All About Egypt',
-    emoji: '🐪',
+    icon: 'camel',
     questions: [
       { q: 'The Nile flows into which sea?', a: ['Red Sea', 'Mediterranean Sea', 'Black Sea', 'Arabian Sea'], c: 1 },
       { q: 'Which city is home to the Great Pyramids?', a: ['Luxor', 'Alexandria', 'Giza', 'Aswan'], c: 2 },
@@ -41,7 +41,7 @@ const PACKS = [
   {
     id: 'webdev',
     name: 'Web Dev Trivia',
-    emoji: '💻',
+    icon: 'laptop',
     questions: [
       { q: 'What does CSS stand for?', a: ['Computer Style Sheets', 'Cascading Style Sheets', 'Creative Style System', 'Coded Style Sheets'], c: 1 },
       { q: 'Which hook runs after every render by default?', a: ['useState', 'useMemo', 'useEffect', 'useRef'], c: 2 },
@@ -102,16 +102,39 @@ function Countdown({ endsAt }) {
   )
 }
 
+
+function Icon({ name, size = 24 }) {
+  const c = { width: size, height: size, viewBox: '0 0 24 24', 'aria-hidden': true, fill: 'none', stroke: 'currentColor', strokeWidth: 1.8, strokeLinecap: 'round', strokeLinejoin: 'round' }
+  const medal = (fill) => <svg {...c} stroke="none"><path d="M7 2h4l1 6H8zM17 2h-4l-1 6h4z" fill="#e21b3c" /><circle cx="12" cy="15" r="6.500" fill={fill} /><circle cx="12" cy="15" r="4" fill="none" stroke="#0004" strokeWidth="1" /></svg>
+  switch (name) {
+    case 'gold': return medal('#ffcf00')
+    case 'silver': return medal('#cfd6e0')
+    case 'bronze': return medal('#d08a4c')
+    case 'crown': return <svg {...c} fill="#ffcf00" stroke="#a87b00"><path d="M3 18l-1-11 5 4 5-8 5 8 5-4-1 11z" /></svg>
+    case 'flag': return <svg {...c}><path d="M5 22V3M5 4h13l-3 4 3 4H5" /></svg>
+    case 'flame': return <svg {...c} fill="#ff8a00" stroke="none"><path d="M12 2s5 4.500 5 10a5 5 0 01-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-6 1-9z" /></svg>
+    case 'party': return <svg {...c}><path d="M3 21l5-14 9 9z" fill="#ffcf0055" /><path d="M14 4l1-2M18 8l2-1M20 12l2 .5M11 3l.5 1.500" /></svg>
+    case 'mic': return <svg {...c}><rect x="9" y="2" width="6" height="12" rx="3" /><path d="M5 11a7 7 0 0014 0M12 18v4" /></svg>
+    case 'phone': return <svg {...c}><rect x="7" y="2" width="10" height="20" rx="2.500" /><path d="M11 18h2" /></svg>
+    case 'bolt': return <svg {...c} fill="#ffcf00" stroke="none"><path d="M13 2L4 14h6l-1 8 9-12h-6z" /></svg>
+    case 'trophy': return <svg {...c}><path d="M7 3h10v6a5 5 0 01-10 0zM7 5H3c0 4 2 5 4 5M17 5h4c0 4-2 5-4 5M12 14v4M8 21h8" /></svg>
+    case 'globe': return <svg {...c}><circle cx="12" cy="12" r="9.500" /><ellipse cx="12" cy="12" rx="4" ry="9.500" /><path d="M2.500 12h19" /></svg>
+    case 'camel': return <svg {...c}><path d="M2 20L12 4l10 16zM12 4v16M7 12h10M4.500 16h15" /></svg>
+    case 'laptop': return <svg {...c}><rect x="4" y="5" width="16" height="11" rx="1.500" /><path d="M2 20h20" /></svg>
+    default: return null
+  }
+}
+
 function Podium({ players }) {
   const top = players.slice(0, 3)
   const order = [top[1], top[0], top[2]].filter(Boolean)
   const heights = ['h-28', 'h-40', 'h-24']
-  const medals = ['🥈', '🥇', '🥉']
+  const medals = ['silver', 'gold', 'bronze']
   return (
     <div className="flex items-end justify-center gap-3">
       {order.map((p, i) => (
         <div key={p.id} className="anim-podium flex w-24 flex-col items-center" style={{ animationDelay: `${i * 0.15}s` }}>
-          <div className="mb-1 text-3xl">{medals[i]}</div>
+          <div className="mb-1"><Icon name={medals[top.indexOf(p) === 0 ? 1 : top.indexOf(p) === 1 ? 0 : 2]} size={36} /></div>
           <div className="mb-2 max-w-24 truncate font-display font-medium">{p.name}</div>
           <div className={`w-full rounded-t-xl bg-white/15 text-center backdrop-blur ${heights[i]}`}>
             <div className="pt-2 font-display text-lg font-semibold text-[#ffcf00]">{fmt(p.score)}</div>
@@ -272,7 +295,7 @@ function Host({ code }) {
                 onClick={() => setPack(p)}
                 className={`rounded-full px-4 py-2 font-display font-medium transition ${pack.id === p.id ? 'bg-[#ffcf00] text-grape' : 'bg-white/15 hover:bg-white/25'}`}
               >
-                {p.emoji} {p.name}
+                <span className="inline-flex items-center gap-2"><Icon name={p.icon} size={18} /> {p.name}</span>
               </button>
             ))}
           </div>
@@ -325,7 +348,7 @@ function Host({ code }) {
                 <div key={p.id} className="flex items-center gap-3 rounded-xl px-3 py-2 odd:bg-white/5">
                   <span className="w-6 text-center font-display">{i + 1}</span>
                   <span className="flex-1 truncate font-display">{p.name}</span>
-                  {p.streak >= 2 && <span title="streak">🔥{p.streak}</span>}
+                  {p.streak >= 2 && <span title="streak" className="inline-flex items-center gap-0.5"><Icon name="flame" size={14} />{p.streak}</span>}
                   <span className="font-display font-semibold">{fmt(p.score)}</span>
                 </div>
               ))}
@@ -448,7 +471,7 @@ function Play({ code }) {
 
       {joined && phase === 'lobby' && (
         <div className="anim-pop mx-auto mt-16 text-center">
-          <div className="anim-float text-6xl">🎉</div>
+          <div className="anim-float"><Icon name="party" size={72} /></div>
           <div className="mt-4 font-display text-3xl font-semibold">You're in, {name}!</div>
           <div className="mt-2 text-white/70">See your name up on the host screen. Get ready…</div>
         </div>
@@ -478,7 +501,7 @@ function Play({ code }) {
             {picked !== null && !result && <span className="text-white/70">Answer locked in…</span>}
             {result && (
               <span className={`anim-pop inline-block rounded-full px-5 py-1.5 ${result.ok ? 'bg-[#26890c]' : 'bg-[#e21b3c]'}`}>
-                {result.ok ? `Correct! +${fmt(result.pts)}` : 'Not this time'} {result.streak >= 2 && `🔥 ${result.streak} streak`}
+                {result.ok ? `Correct! +${fmt(result.pts)}` : 'Not this time'} {result.streak >= 2 && `${result.streak} streak`}
               </span>
             )}
           </div>
@@ -488,7 +511,7 @@ function Play({ code }) {
       {joined && phase === 'reveal' && reveal && (
         <div className="anim-pop mx-auto mt-10 w-full max-w-md text-center">
           <div className={`rounded-3xl px-6 py-8 font-display text-3xl font-semibold ${result?.ok ? 'bg-[#26890c]' : picked === null ? 'bg-white/15' : 'bg-[#e21b3c]'}`}>
-            {picked === null ? 'Time ran out!' : result?.ok ? 'Correct! 🎉' : 'Wrong one 😅'}
+            {picked === null ? 'Time ran out!' : result?.ok ? 'Correct!' : 'Wrong one'}
           </div>
           {result && <div className="mt-4 font-display text-xl text-[#ffcf00]">Score: {fmt(result.score)}</div>}
           <div className="mt-6 rounded-3xl bg-white/10 p-4 text-left backdrop-blur">
@@ -507,7 +530,7 @@ function Play({ code }) {
 
       {joined && phase === 'final' && finalScores && (
         <div className="anim-pop mx-auto mt-10 w-full max-w-md text-center">
-          <div className="anim-float text-6xl">{myFinalRank === 0 ? '👑' : myFinalRank === 1 ? '🥈' : myFinalRank === 2 ? '🥉' : '🏁'}</div>
+          <div className="anim-float text-6xl"><Icon name={myFinalRank === 0 ? 'crown' : myFinalRank === 1 ? 'silver' : myFinalRank === 2 ? 'bronze' : 'flag'} size={72} /></div>
           <div className="mt-3 font-display text-3xl font-semibold">
             {myFinalRank === 0 ? 'You won!' : myFinalRank > 0 ? `You placed #${myFinalRank + 1}` : 'Quiz over!'}
           </div>
@@ -544,7 +567,7 @@ function Home() {
 
         <div className="grid w-full max-w-2xl gap-4 sm:grid-cols-2">
           <div className="anim-pop rounded-3xl bg-white/10 p-6 backdrop-blur" style={{ animationDelay: '0.1s' }}>
-            <div className="text-4xl">🎤</div>
+            <Icon name="mic" size={40} />
             <div className="mt-2 font-display text-2xl font-semibold">Host a quiz</div>
             <p className="mt-1 text-sm text-white/70">Get a room code, pick a pack, run the game from this screen.</p>
             <button
@@ -556,7 +579,7 @@ function Home() {
           </div>
 
           <div className="anim-pop rounded-3xl bg-white/10 p-6 backdrop-blur" style={{ animationDelay: '0.2s' }}>
-            <div className="text-4xl">📱</div>
+            <Icon name="phone" size={40} />
             <div className="mt-2 font-display text-2xl font-semibold">Join a game</div>
             <p className="mt-1 text-sm text-white/70">Got a code? Pop it in and play along live.</p>
             <input
@@ -577,9 +600,9 @@ function Home() {
         </div>
 
         <div className="flex flex-wrap justify-center gap-2 text-sm text-white/60">
-          <span className="rounded-full bg-white/10 px-3 py-1">⚡ real-time over Supabase</span>
-          <span className="rounded-full bg-white/10 px-3 py-1">🔥 streak scoring</span>
-          <span className="rounded-full bg-white/10 px-3 py-1">🏆 live podium</span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1"><Icon name="bolt" size={14} /> real-time over Supabase</span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1"><Icon name="flame" size={14} /> streak scoring</span>
+          <span className="inline-flex items-center gap-1.5 rounded-full bg-white/10 px-3 py-1"><Icon name="trophy" size={14} /> live podium</span>
         </div>
       </div>
     </Grain>
